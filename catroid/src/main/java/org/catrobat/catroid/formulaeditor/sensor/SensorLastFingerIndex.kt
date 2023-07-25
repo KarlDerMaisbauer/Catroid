@@ -1,6 +1,6 @@
 /*
  * Catroid: An on-device visual programming system for Android devices
- * Copyright (C) 2010-2022 The Catrobat Team
+ * Copyright (C) 2010-2023 The Catrobat Team
  * (<http://developer.catrobat.org/credits>)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.formulaeditor;
 
-public interface SensorCustomEventListener {
-	void onCustomSensorChanged(SensorCustomEvent event);
+package org.catrobat.catroid.formulaeditor.sensor
+
+import org.catrobat.catroid.utils.TouchUtil
+
+class SensorLastFingerIndex: Sensor {
+    override fun getSensorValue(): Double {
+        return TouchUtil.getLastTouchIndex().toDouble()
+    }
+
+    companion object {
+        @Volatile
+        private var instance: SensorLastFingerIndex? = null
+
+        fun getInstance() =
+            instance ?: synchronized(this) {
+                instance ?: SensorLastFingerIndex().also { instance = it }
+            }
+    }
 }

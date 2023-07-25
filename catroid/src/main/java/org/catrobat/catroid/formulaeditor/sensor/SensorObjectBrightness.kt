@@ -1,6 +1,6 @@
 /*
  * Catroid: An on-device visual programming system for Android devices
- * Copyright (C) 2010-2022 The Catrobat Team
+ * Copyright (C) 2010-2023 The Catrobat Team
  * (<http://developer.catrobat.org/credits>)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,11 +20,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.formulaeditor
 
-data class SensorCustomEvent(
-    var sensor: Sensors,
-    var value: Any
-) {
-    var timestamp: Long = System.currentTimeMillis()
+package org.catrobat.catroid.formulaeditor.sensor
+
+import org.catrobat.catroid.formulaeditor.SensorHandler
+
+class SensorObjectBrightness : Sensor {
+
+    override fun getSensorValue(): Double {
+        return SensorHandler.currentSprite.look.brightnessInUserInterfaceDimensionUnit.toDouble()
+    }
+
+    companion object {
+        @Volatile
+        private var instance: SensorObjectBrightness? = null
+
+        fun getInstance() =
+            instance ?: synchronized(this) {
+                instance ?: SensorObjectBrightness().also { instance = it }
+            }
+    }
 }
